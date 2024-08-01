@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Runner</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for flash messages */
+        .flash {
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        .flash.hidden {
+            opacity: 0;
+        }
+        #flash-messages {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Run Script</h1>
+        <form method="POST" action="/run_script">
+            <div class="form-group">
+                <label for="script">Select Script:</label>
+                <select id="script" name="script" class="form-control" required>
+                    <option value="script1">Extract Cards</option>
+                    <option value="script2">Extract Combined Cards Folders</option>
+                    <option value="script3">Extract Combined Parcels Folders</option>
+                    <option value="script4">Extract Parcels</option>
+                    <option value="script5">Script 5</option>
+                    <option value="script6">Delete All CSVs</option>
+                    <option value="script7">OCR Renamer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="root_path">Enter Root Path:</label>
+                <input type="text" id="root_path" name="root_path" class="form-control" placeholder="e.g., /path/to/directory" required>
+            </div>
+
+            <!-- Additional inputs for OCR Renamer -->
+            <div id="ocrRenamerInputs" style="display:none;">
+                <div class="form-group">
+                    <label for="prefix">Enter Prefix:</label>
+                    <input type="text" id="prefix" name="prefix" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="suffix">Enter Suffix:</label>
+                    <input type="text" id="suffix" name="suffix" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="poppler_path">Enter Poppler Path:</label>
+                    <input type="text" id="poppler_path" name="poppler_path" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="tesseract_path">Enter Tesseract Path:</label>
+                    <input type="text" id="tesseract_path" name="tesseract_path" class="form-control">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Run Script</button>
+        </form>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} flash" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('script').addEventListener('change', function () {
+            if (this.value === 'script7') {
+                document.getElementById('ocrRenamerInputs').style.display = 'block';
+            } else {
+                document.getElementById('ocrRenamerInputs').style.display = 'none';
+            }
+        });
+
+        // JavaScript to fade out flash messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('#flash-messages .flash');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.classList.add('hidden');
+                    setTimeout(function() {
+                        message.remove();
+                    }, 1000); // Matches the duration of the CSS transition
+                }, 3000); // Show the message for 3 seconds
+            });
+        });
+    </script>
+</body>
+</html>
