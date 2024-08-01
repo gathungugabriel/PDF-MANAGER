@@ -1,5 +1,3 @@
-markdown
-Copy code
 # About PDF Manager
 
 ## Overview
